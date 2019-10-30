@@ -1,0 +1,65 @@
+@charset "UTF-8";
+.App {
+  text-align: center; }
+
+.App-logo {
+  height: 40vmin; }
+
+.App-header {
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white; }
+
+.App-link {
+  color: #09d3ac; }
+
+.flex-container {
+  display: flex;
+  align-items: stretch;
+  background-color: #f1f1f1; }
+
+​
+.flex-container > div {
+  background-color: DodgerBlue;
+  color: white;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+  height: 300px;
+  overflow-y: scroll;
+  font-size: 30px; }
+
+.flex-sub-container {
+  display: flex;
+  flex-direction: column; }
+
+​
+.flex-sub-container > div {
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  color: blue;
+  text-align: center;
+  line-height: 75px;
+  font-size: 5em; }
+
+​
+.flex-li-container {
+  display: flex; }
+
+​
+.flex-li-container > div {
+  background-color: #f1f1f1;
+  margin: 10px;
+  padding: 20px;
+  font-size: 15px; }
+
+.task-details {
+  margin: 10px;
+  background-color: lavender; }

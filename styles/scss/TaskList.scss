@@ -1,0 +1,41 @@
+.flex-sub-container {
+  display: flex;
+  flex-direction: column;
+}
+​
+
+.flex-sub-container > div {
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  color:blue;
+  text-align: center;
+  line-height: 75px;
+  font-size: 5em;
+}
+
+
+.flex-li-container {
+  display: flex;
+  
+}
+​
+.flex-li-container > div {
+  background-color: #f1f1f1;
+  margin: 10px;
+  padding: 20px;
+font-size: 15px;
+}
+
+.icon {
+  cursor: pointer; 
+}
+
+td {
+  text-align: left;
+}
+
+.disable-edit {
+  background-color: #cacaca;
+  pointer-events: none;
+}
