@@ -8,7 +8,7 @@ const ConfirmBox = (props) => {
         contentLabel = "message"
     >
         {props.message}
-        <button onClick = {props.handleClick}>Close</button>
+        <button onClick = {props.handleClick}>Save</button>
     </Modal>
 }
 

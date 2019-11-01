@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import "../styles/css/TaskList.css";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { deleteItem, editItem, updateItem } from '../Store/action';
+import { deleteItem, editItem, saveItem } from '../Store/action';
 import DataTable from 'react-data-table-component';
 //import {NotificationManager} from 'react-notifications';
 
@@ -29,36 +29,54 @@ class TaskList extends Component {
     super(props);
 
     this.state = {
-      // selectedRows : [],
       selectedCount: 0,
       allSelected: false,
-      clearSelectedRows: false
+      allCompleted: false,
+      clearSelectedRows: true,
+      clearCompletedRows: true
     };
     this.tableObject = {};
+    this.completedTasks = {};
   }
 
   markComplete = () => {
-    let markedArr = this.tableObject.selectedRows.map(val=>val.id);
-    let completedArr = this.props.tasks.filter(val => {
-      if(markedArr.indexOf(val.id) !== -1){
+    this.handleClearRows();
+    let buckets = { ...this.props.buckets };
+    let markedArr = this.tableObject.selectedRows.map(val => val.id);
+    buckets[this.props.bucketName] = buckets[this.props.bucketName].filter(val => {
+      if (markedArr.indexOf(val.id) !== -1) {
         val.isComplete = true;
       }
       return val;
     });
 
-    this.props.updateItem(completedArr);
+    this.props.saveItem(buckets);
+  };
+
+  markTodo = () => {
+    this.handleClearCompletedRows();
+    let buckets = { ...this.props.buckets };
+    let markedArr = this.completedTasks.selectedRows.map(val => val.id);
+    buckets[this.props.bucketName] = buckets[this.props.bucketName].filter(val => {
+      if (markedArr.indexOf(val.id) !== -1) {
+        val.isComplete = false;
+      }
+      return val;
+    });
+
+    this.props.saveItem(buckets);
   };
 
   deleteDetails = () => {
     this.handleClearRows();
-    let taskList = [...this.props.tasks];
+    let buckets = { ...this.props.buckets };
+    let taskList = buckets[this.props.bucketName];
     let deleteArr = this.tableObject.selectedRows.map(val => val.id);
     let output = taskList.filter((val) => {
       return deleteArr.indexOf(val.id) === -1;
     });
-
-    this.props.deleteItem(output);
-
+    buckets[this.props.bucketName] = output;
+    this.props.deleteItem(buckets);
   }
 
   editDetails = () => {
@@ -72,9 +90,8 @@ class TaskList extends Component {
 
 
   rowCreated = (data, status) => {
-
     let row = [];
-    if (data.length > 0) {
+    if (data && data.length > 0) {
       data.forEach((element, index) => {
         if (status === "completed") {
           if (element.isComplete) {
@@ -82,7 +99,7 @@ class TaskList extends Component {
               {
                 data: element.data,
                 id: element.id,
-                isComplete : element.isComplete
+                isComplete: element.isComplete
               }
             );
           }
@@ -92,24 +109,38 @@ class TaskList extends Component {
               {
                 data: element.data,
                 id: element.id,
-                isComplete : element.isComplete
+                isComplete: element.isComplete
               }
             );
           }
         }
       });
-    } 
+    }
     return row;
   };
 
   handleSelection = (e) => {
-    this.tableObject = e;
+    let temp = {}
+    temp.allSelected = e.allSelected;
+    temp.selectedRows = e.selectedRows.filter(val=>!val.isComplete);
+    temp.selectedCount = temp.selectedRows.length;
+    this.tableObject = temp;
   };
 
+  handleCompleteSelection = e => {
+    let temp = {}
+    temp.allSelected = e.allSelected;
+    temp.selectedRows = e.selectedRows.filter(val=>val.isComplete);
+    temp.selectedCount = temp.selectedRows.length;
+    this.completedTasks = temp;
+  }
   handleClearRows = () => {
     this.setState({ clearSelectedRows: !this.state.clearSelectedRows })
   };
-  
+  handleClearCompletedRows = () => {
+    this.setState({ clearCompletedRows: !this.state.clearCompletedRows })
+  };
+
   render() {
     //console.log(this.state);
     return (
@@ -118,7 +149,7 @@ class TaskList extends Component {
           <div className="col-sm-6">
             <DataTable
               columns={todoColumns}
-              data={this.rowCreated(this.props.tasks)}
+              data={this.rowCreated(this.props.buckets[this.props.bucketName])}
               keyField={'id'}
               selectableRows
               onRowSelected={this.handleSelection}
@@ -130,18 +161,21 @@ class TaskList extends Component {
           <div className="col-sm-6">
             <DataTable
               columns={completedColumns}
-              data={this.rowCreated(this.props.tasks, "completed")}
+              data={this.rowCreated(this.props.buckets[this.props.bucketName], "completed")}
               keyField={'id'}
+              selectableRows
+              onRowSelected={this.handleCompleteSelection}
+              clearSelectedRows={this.state.clearCompletedRows}
               responsive
             >
             </DataTable>
           </div>
-          &nbsp;
-          <div className="row">
-            <button onClick={this.editDetails} type="button" className="btn btn-default">Edit</button>
-            <button onClick={this.deleteDetails} type="button" className="btn btn-default">Delete</button>
-            <button onClick={this.markComplete} type="button" className="btn btn-default">Mark Complete</button>
-          </div>
+        </div>
+        <div className="row">
+          <button onClick={this.editDetails} type="button" className="btn btn-default">Edit</button>
+          <button onClick={this.deleteDetails} type="button" className="btn btn-default">Delete</button>
+          <button onClick={this.markTodo} type="button" className="btn btn-default">Mark TODO</button>
+          <button onClick={this.markComplete} type="button" className="btn btn-default">Mark Complete</button>
         </div>
       </div>
     )
@@ -152,7 +186,7 @@ class TaskList extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    tasks: state.list.items,
+    buckets: state.list.buckets,
     currentTask: state.list.currentItem
   };
 };
@@ -161,7 +195,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      deleteItem, editItem, updateItem
+      deleteItem, editItem, saveItem
     },
     dispatch
   );
