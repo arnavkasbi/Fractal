@@ -12,6 +12,6 @@ User can create a bucket and operate on tasks of a particular bucket.
 
 This is the initial commit with basic functionalities of save/edit/delete/marking. 
 
-Editing name of Bucket is pending.
+Editing name of Bucket is also done.
 
 CSS Responsive features and Web accessibility is yet to be implemented.
