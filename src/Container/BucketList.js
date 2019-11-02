@@ -44,21 +44,12 @@ class BucketList extends Component {
         }
     };
 
-    /*
-    editBucket = (bucketName) => {
-        console.log(bucketName);
-    }*/
-
     showBucketList = (data) => {
         let row = [];
         if (data.length > 0) {
             data.forEach((element, id) => {
                 row.push(
                     <li key={id} className="list-group-item" >
-                        <i
-                            className='fa fa-pencil icon pull-right'
-                            aria-hidden="true">
-                        </i>
                         <a href={'Tasks/' + element}>
                             <i
                                 className='fa fa-eye pull-right'
@@ -105,7 +96,7 @@ class BucketList extends Component {
                         </div>
                     </form>
                 </Modal>
-                <div className="row">
+                <div className="row bg-info">
                     <div className="col-sm-6">
                         <button onClick={this.createBucket} type="button" className="btn btn-default pull-right">Create Bucket</button>
                         <div className="panel panel-default">
