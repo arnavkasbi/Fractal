@@ -7,7 +7,6 @@ import TaskDetails from './taskDetails';
 import TaskList from './TaskList';
 import { saveBucket } from '../Store/action';
 
-
 class Tasks extends Component {
     constructor(props) {
         super(props);
@@ -15,7 +14,7 @@ class Tasks extends Component {
             bucketName: this.props.match.params.bucket
         };
     }
-    
+
     updateBucketName = value => {
         let buckets = { ...this.props.buckets };
         buckets[value] = buckets[this.state.bucketName];
